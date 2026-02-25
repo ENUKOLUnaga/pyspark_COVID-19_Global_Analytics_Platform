@@ -15,7 +15,7 @@ echo "Step 2: Uploading CSV files to /data/covid/raw ..."
 LOCAL_DATA_DIR="/mnt/e/covid_data"
 
 if [ ! -d "$LOCAL_DATA_DIR" ]; then
-    echo "❌ ERROR: Local directory $LOCAL_DATA_DIR does not exist."
+    echo "ERROR: Local directory $LOCAL_DATA_DIR does not exist."
     echo "Fix the path and re-run."
     exit 1
 fi
