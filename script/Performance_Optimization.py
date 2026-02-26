@@ -43,5 +43,25 @@ df_bj.explain("formatted")
 #Shuffle Optimization
 spark.conf.set("spark.sql.shuffle.partitions", 50)
 
+"""Why Shuffle is Expensive?
+-Data is moved across executors
+Requires:
+1)Sorting
+2)Disk I/O
+3)Network transfer
+It Causes job slowdowns and failures"""
+
+#Caching Strategy
+df_cached = df.persist(StorageLevel.MEMORY_AND_DISK)
+df_cached.count()
+
+"""
+When NOT to use Cache
+-Don’t cache when:
+1)DF used only once
+2)DF is too large to fit memory
+3)Query is cheap to recompute
+4)Highly skewed DF → fills memory unevenly
+Caching should reduce recomputation, not increase memory pressure."""
 #Stopping Spark Session
 spark.stop()
