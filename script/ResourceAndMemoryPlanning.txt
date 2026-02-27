@@ -1,0 +1,70 @@
+1.Executor Memory:
+------------------
+Executor memory refers to the amount of RAM allocated to each Spark executor.
+
+a) Execution Memory:
+--------------------
+-Used for runtime operations
+(e.g., shuffles, aggregations, joins, sorting).
+-Spark automatically manages this memory.
+
+b) Storage Memory:
+------------------
+-Used for caching DataFrames and RDDs.
+-Stores broadcast variables, cached blocks, and uncompressed data.
+
+c) User Memory:
+---------------
+-Small portion for user-defined objects or Python overhead.
+---------------------------------------------------------------------------------------------------
+2. Executor Cores:
+------------------
+-Executor cores define the level of parallelism inside each executor.
+-More cores = executor can run more tasks simultaneously
+-Too many cores = task contention + GC pressure
+-Too few cores = under-utilized cluster
+---------------------------------------------------------------------------------------------------
+3. Ideal Partition Size:
+------------------------
+-Spark works best when each partition is 128–256 MB.
+Why?
+----
+-Avoids small partitions then too many tasks, scheduling overhead
+-Avoids huge partitions OOM & long tasks
+-Matches HDFS block size (128 MB)
+---------------------------------------------------------------------------------------------------
+4. YARN Container Allocation:
+-----------------------------
+When running on YARN, every executor runs inside a container.
+
+->A container allocates:
+------------------------
+-vCores
+-RAM
+-Local directories
+If request > available cluster resources then YARN keeps job in ACCEPTED state.
+---------------------------------------------------------------------------------------------------
+5.What Happens During OOM (Out-Of-Memory):
+------------------------------------------
+->If executor runs out of memory:
+-Spark throws OutOfMemoryError
+-Shuffle files get corrupted
+-Job may retry 4 times
+-Some stages get stuck in “KILLED” or “FAILED”
+
+Common causes:
+-------------
+-Large skewed partitions
+-Large joins without broadcast
+-Caching too many columns
+---------------------------------------------------------------------------------------------------
+6. Spill-to-Disk Behavior:
+--------------------------
+-Spark automatically spills to disk when memory is insufficient.
+It happens during:
+------------------
+-Shuffle (SortMergeJoin)
+-GroupBy
+-OrderBy
+-Aggregations
+---------------------------------------------------------------------------------------------------
